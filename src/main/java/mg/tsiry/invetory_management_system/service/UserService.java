@@ -12,5 +12,8 @@ public interface UserService {
     GlobalResponse updateUser(Long id, UserDto userDto);
     GlobalResponse deleteUser(Long id);
     GlobalResponse getUserTransaction(Long id);
+    GlobalResponse disableUser(Long id);
+    GlobalResponse listAllDisabledUser(int page, int size, String search);
+    GlobalResponse enableUser(Long id);
 
 }

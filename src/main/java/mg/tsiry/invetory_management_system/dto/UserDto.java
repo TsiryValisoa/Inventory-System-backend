@@ -19,4 +19,7 @@ public class UserDto {
     private String phoneNumber;
     private UserRole role;
     private LocalDateTime createdAt;
+    private boolean isActive;
+    private String disabledBy;
+    private String enabledBy;
 }

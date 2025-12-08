@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .phoneNumber(userDto.getPhoneNumber())
                 .role(defaultRole)
+                .isActive(true)
                 .build();
 
         userRepository.save(userToSave);
@@ -93,17 +94,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public GlobalResponse getAllUsers(int page, int size, String search) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<User> userPage;
-
-        if (search != null && !search.isEmpty()) {
-            userPage = userRepository.findByNameOrRole(search, pageable);
-        } else {
-            userPage = userRepository.findAll(pageable);
-        }
+        Page<User> userPage = pageSearchList(page, size, search);
 
         List<User> filterUser = userPage.getContent().stream()
                 .filter(user -> !"rotsiniaina.tsiry@gmail.com".equalsIgnoreCase(user.getEmail()))
+                .filter(user -> user.isActive())
                 .toList();
         List<UserDto> userDtoList = modelMapper.map(filterUser, new TypeToken<List<UserDto>>() {}.getType());
 
@@ -188,6 +183,72 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public GlobalResponse disableUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+
+        user.setDisabledBy(name);
+        user.setActive(false);
+
+        userRepository.save(user);
+
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+
+        return GlobalResponse.builder()
+                .status(200)
+                .message("Account disabled successfully.")
+                .user(userDto)
+                .build();
+    }
+
+    @Override
+    public GlobalResponse listAllDisabledUser(int page, int size, String search) {
+
+        Page<User> userPage = pageSearchList(page, size, search);
+
+        List<User> filterUser = userPage.getContent().stream()
+                .filter(user -> !user.isActive())
+                .toList();
+        List<UserDto> userDtoList = modelMapper.map(filterUser, new TypeToken<List<UserDto>>() {}.getType());
+
+        return GlobalResponse.builder()
+                .status(200)
+                .message("Success.")
+                .currentPage(page)
+                .totalElement(userPage.getTotalElements())
+                .totalPage(userPage.getTotalPages())
+                .users(userDtoList)
+                .build();
+    }
+
+    @Override
+    public GlobalResponse enableUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+
+        user.setEnabledBy(name);
+        user.setActive(true);
+
+        userRepository.save(user);
+
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+
+        return GlobalResponse.builder()
+                .status(200)
+                .message("Account enabled successfully.")
+                .user(userDto)
+                .build();
+    }
+
     private void checkDuplicateName(Long id, String name) {
         Optional<User> user = userRepository.findByName(name);
         if (user.isPresent() && !user.get().getId().equals(id)) {
@@ -207,5 +268,16 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent() && !user.get().getId().equals(id)) {
             throw new NameValueRequiredException("This phone number already exist!");
         }
+    }
+
+    public Page<User> pageSearchList(int page, int size, String search) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        if (search != null && !search.isEmpty()) {
+            return userRepository.findByNameOrRole(search, pageable);
+        }
+
+        return userRepository.findAll(pageable);
     }
 }

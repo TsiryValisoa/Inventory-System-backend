@@ -46,7 +46,27 @@ public class UserController {
     }
 
     @GetMapping("/transactions/{id}")
-    public ResponseEntity<?> listUserAndTransaction(@PathVariable Long id) {
+    public ResponseEntity<GlobalResponse> listUserAndTransaction(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserTransaction(id));
+    }
+
+    @PutMapping("/disable/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<GlobalResponse> disableUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.disableUser(id));
+    }
+
+    @GetMapping("/all-disabled")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<GlobalResponse> listAllDisableUser(@RequestParam int page,
+                                                @RequestParam int size,
+                                                @RequestParam(required = false) String search) {
+        return ResponseEntity.ok(userService.listAllDisabledUser(page, size, search));
+    }
+
+    @PutMapping("/enable/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<GlobalResponse> enableUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.enableUser(id));
     }
 }
