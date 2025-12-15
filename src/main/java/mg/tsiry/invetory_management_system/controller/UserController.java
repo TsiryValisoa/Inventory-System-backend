@@ -59,8 +59,8 @@ public class UserController {
     @GetMapping("/all-disabled")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<GlobalResponse> listAllDisableUser(@RequestParam int page,
-                                                @RequestParam int size,
-                                                @RequestParam(required = false) String search) {
+                                                             @RequestParam int size,
+                                                             @RequestParam(required = false) String search) {
         return ResponseEntity.ok(userService.listAllDisabledUser(page, size, search));
     }
 
