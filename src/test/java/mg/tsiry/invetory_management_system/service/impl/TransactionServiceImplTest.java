@@ -7,6 +7,7 @@ import mg.tsiry.invetory_management_system.data.entities.User;
 import mg.tsiry.invetory_management_system.data.repositories.ProductRepository;
 import mg.tsiry.invetory_management_system.data.repositories.SupplierRepository;
 import mg.tsiry.invetory_management_system.data.repositories.TransactionRepository;
+import mg.tsiry.invetory_management_system.data.repositories.UserRepository;
 import mg.tsiry.invetory_management_system.dto.ProductDto;
 import mg.tsiry.invetory_management_system.dto.SupplierDto;
 import mg.tsiry.invetory_management_system.dto.TransactionDto;
@@ -18,11 +19,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,13 +46,21 @@ class TransactionServiceImplTest {
     private SupplierRepository supplierRepository;
 
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
 
     @InjectMocks
     private TransactionServiceImpl transactionService;
 
     @Test
     void shouldRestockInventory() {
+
+        // Mock security
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(authentication.getName()).thenReturn("admin@gmail.com");
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
 
         Product product = new Product();
         product.setId(1L);
@@ -62,6 +75,7 @@ class TransactionServiceImplTest {
         User user = new User();
         user.setId(1L);
         user.setName("Admin");
+        user.setEmail("admin@mail.com");
 
         ProductDto productDto = new ProductDto();
         productDto.setId(1L);
@@ -80,8 +94,7 @@ class TransactionServiceImplTest {
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
-        when(userService.getCurrentLoggedUser()).thenReturn(userDto);
-        when(modelMapper.map(userDto, User.class)).thenReturn(user);
+        when(userRepository.findByEmail("admin@gmail.com")).thenReturn(Optional.of(user));
 
         GlobalResponse response = transactionService.restockInventory(transactionDto);
 
