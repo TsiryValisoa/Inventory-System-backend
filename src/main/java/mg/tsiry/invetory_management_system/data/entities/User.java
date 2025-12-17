@@ -32,6 +32,7 @@ public class User {
     private List<Transaction> transactions;
 
     private final LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
     private boolean isActive = true;
     private String disabledBy;
     private String enabledBy;

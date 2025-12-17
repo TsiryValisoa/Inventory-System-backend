@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -140,6 +141,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setEmail(userDto.getEmail());
         existingUser.setPhoneNumber(userDto.getPhoneNumber());
         existingUser.setRole(userDto.getRole());
+        existingUser.setUpdatedAt(LocalDateTime.now());
 
         if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
