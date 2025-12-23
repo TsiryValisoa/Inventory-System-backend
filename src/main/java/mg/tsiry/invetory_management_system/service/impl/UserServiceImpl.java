@@ -78,6 +78,10 @@ public class UserServiceImpl implements UserService {
         User userMail = userRepository.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> new NotFoundException("Email not found!"));
 
+        if (!userMail.isActive()) {
+            throw new InvalidCredentialsException("This user is disabled");
+        }
+
         if (!passwordEncoder.matches(userDto.getPassword(), userMail.getPassword())) {
             throw new InvalidCredentialsException("password does not match!");
         }
