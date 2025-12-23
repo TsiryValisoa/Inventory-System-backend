@@ -38,8 +38,8 @@ public class TransactionController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<GlobalResponse> listAllTransaction(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<GlobalResponse> listAllTransaction(@RequestParam int page,
+                                                             @RequestParam int size,
                                                              @RequestParam(required = false) String searchText) {
         return ResponseEntity.ok(transactionService.getAllTransactions(page, size, searchText));
     }
