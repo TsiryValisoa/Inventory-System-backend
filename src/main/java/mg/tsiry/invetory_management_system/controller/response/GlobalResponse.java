@@ -37,6 +37,7 @@ public class GlobalResponse {
     private List<ProductDto> products;
     private TransactionDto transaction;
     private List<TransactionDto> transactions;
+    private RefreshTokenDto refreshToken;
 
     private final LocalDateTime timestamp = LocalDateTime.now();
 

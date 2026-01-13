@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import mg.tsiry.invetory_management_system.controller.response.GlobalResponse;
 import mg.tsiry.invetory_management_system.data.entities.User;
 import mg.tsiry.invetory_management_system.data.repositories.UserRepository;
+import mg.tsiry.invetory_management_system.dto.RefreshTokenDto;
 import mg.tsiry.invetory_management_system.dto.UserDto;
 import mg.tsiry.invetory_management_system.enums.UserRole;
 import mg.tsiry.invetory_management_system.exception.InvalidCredentialsException;
 import mg.tsiry.invetory_management_system.exception.NameValueRequiredException;
 import mg.tsiry.invetory_management_system.exception.NotFoundException;
 import mg.tsiry.invetory_management_system.security.JwtUtils;
+import mg.tsiry.invetory_management_system.service.RefreshTokenService;
 import mg.tsiry.invetory_management_system.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final ModelMapper modelMapper;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public GlobalResponse addUser(UserDto userDto) {
@@ -87,12 +90,15 @@ public class UserServiceImpl implements UserService {
         }
         String token = jwtUtils.generateToken(userMail.getEmail());
 
+        RefreshTokenDto refreshTokenResponse = refreshTokenService.createRefreshToken(userMail.getId());
+
         return GlobalResponse.builder()
                 .status(200)
                 .message("User logged successfully.")
                 .role(userMail.getRole())
                 .token(token)
-                .expirationTime("6 months.")
+                .expirationTime("15 minutes")
+                .refreshToken(refreshTokenResponse)
                 .build();
     }
 
