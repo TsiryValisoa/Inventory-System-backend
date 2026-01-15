@@ -23,4 +23,5 @@ public class UserDto {
     private boolean isActive;
     private String disabledBy;
     private String enabledBy;
+    private String token;
 }
