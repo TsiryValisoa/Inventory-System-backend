@@ -1,5 +1,6 @@
 package mg.tsiry.invetory_management_system.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mg.tsiry.invetory_management_system.controller.response.GlobalResponse;
 import mg.tsiry.invetory_management_system.data.entities.ResetToken;
@@ -61,7 +62,7 @@ public class PasswordResetImpl implements PasswordResetService {
 
          Optional<ResetToken> resetToken = resetTokenRepository.findByToken(token);
 
-         if (resetToken.isPresent() || resetToken.get().isExpired()) {
+         if (resetToken.isPresent() && resetToken.get().isExpired()) {
              return GlobalResponse.builder()
                      .status(404)
                      .message("Invalid or expired token.")
@@ -111,7 +112,7 @@ public class PasswordResetImpl implements PasswordResetService {
     private void sendEmail(String email, String token) {
 
         String resetUrl = frontendUrl + "/reset-password?token=" + token;
-        String body = "Click teh link below to reset your password:\n" + resetUrl;
+        String body = "Click the link below to reset your password:\n" + resetUrl;
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
