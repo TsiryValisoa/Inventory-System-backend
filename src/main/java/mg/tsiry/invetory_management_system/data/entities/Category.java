@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @Entity
 @Table(name = "categories")
 @Data

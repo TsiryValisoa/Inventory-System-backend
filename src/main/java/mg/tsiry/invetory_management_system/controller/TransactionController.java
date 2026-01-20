@@ -11,6 +11,9 @@ import mg.tsiry.invetory_management_system.utils.TransactionMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @RestController
 @RequestMapping("/api/transactions")
 @AllArgsConstructor

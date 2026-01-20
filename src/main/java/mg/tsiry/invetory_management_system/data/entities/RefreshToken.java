@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @Entity
 @Table(name = "token")
 @Data

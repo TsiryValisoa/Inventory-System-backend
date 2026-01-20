@@ -7,6 +7,9 @@ import mg.tsiry.invetory_management_system.enums.UserRole;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @Entity
 @Table(name = "users")
 @Data

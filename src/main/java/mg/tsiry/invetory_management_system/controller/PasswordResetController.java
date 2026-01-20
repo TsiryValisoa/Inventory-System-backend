@@ -11,6 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @RestController
 @RequestMapping("/api/reset-password")
 @AllArgsConstructor

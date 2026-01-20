@@ -8,6 +8,9 @@ import mg.tsiry.invetory_management_system.enums.TransactionType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @Entity
 @Table(name = "transactions")
 @Data

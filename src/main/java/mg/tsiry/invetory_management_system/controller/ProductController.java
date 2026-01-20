@@ -16,6 +16,9 @@ import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * @author Tsiry Valisoa
+ */
 @RestController
 @RequestMapping("/api/products")
 @AllArgsConstructor
